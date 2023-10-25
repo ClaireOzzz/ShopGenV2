@@ -11,7 +11,7 @@ from huggingface_hub import snapshot_download, HfApi, create_repo
 # hf_token = os.environ.get("HF_TOKEN_WITH_WRITE_PERMISSION")
 
 #is_shared_ui = True if "fffiloni/train-dreambooth-lora-sdxl" in os.environ['SPACE_ID'] else False
-is_shared_ui = True
+is_shared_ui = False
 
 is_gpu_associated = torch.cuda.is_available()
 
@@ -32,11 +32,11 @@ def check_upload_or_no(value):
 
 def load_images_to_dataset(images, dataset_name):
 
-    if is_shared_ui:
-        raise gr.Error("This Space only works in duplicated instances")
+    # if is_shared_ui:
+    #     raise gr.Error("This Space only works in duplicated instances")
 
-    if dataset_name == "":
-        raise gr.Error("You forgot to name your new dataset. ")
+    # if dataset_name == "":
+    #     raise gr.Error("You forgot to name your new dataset. ")
 
     # Create the directory if it doesn't exist
     my_working_directory = f"my_working_directory_for_{dataset_name}"
@@ -62,12 +62,12 @@ def load_images_to_dataset(images, dataset_name):
     repo_id = f"{your_username}/{dataset_name}"
     create_repo(repo_id=repo_id, repo_type="dataset", private=True, token=hf_token)
     
-    api.upload_folder(
-        folder_path=path_to_folder,
-        repo_id=repo_id,
-        repo_type="dataset",
-        token=hf_token
-    )
+    # api.upload_folder(
+    #     folder_path=path_to_folder,
+    #     repo_id=repo_id,
+    #     repo_type="dataset",
+    #     token=hf_token
+    # )
 
     return "Done, your dataset is ready and loaded for the training step!", repo_id
 
@@ -304,6 +304,7 @@ with gr.Blocks(css=css) as demo:
             - You can use this tab to upload models later if you choose not to upload models in training time or if upload in training time failed.
             ''')
             #create_upload_demo(HF_TOKEN)
+
     with gr.Column(elem_id="col-container"):
         if is_shared_ui:
             top_description = gr.HTML(f'''
@@ -346,7 +347,7 @@ with gr.Blocks(css=css) as demo:
         
         gr.Markdown("# SD-XL Dreambooth LoRa Training UI 💭")
         
-        upload_my_images = gr.Checkbox(label="Drop your training images ? (optional)", value=False)
+        upload_my_images = gr.Checkbox(label="Drop your training images ? (optional)", value=True)
         gr.Markdown("Use this step to upload your training images and create a new dataset. If you already have a dataset stored on your HF profile, you can skip this step, and provide your dataset ID in the training `Datased ID` input below.")
          
         with gr.Group(visible=False, elem_id="upl-dataset-group") as upload_group:
@@ -389,7 +390,7 @@ with gr.Blocks(css=css) as demo:
     train_button.click(
         fn = main,
         inputs = [
-            dataset_id,
+            images,
             model_output_folder,
             instance_prompt,
             max_train_steps,
@@ -399,4 +400,4 @@ with gr.Blocks(css=css) as demo:
         outputs = [train_status]
     )
 
-demo.launch(debug=True)
+demo.launch(debug=True, share=True)
