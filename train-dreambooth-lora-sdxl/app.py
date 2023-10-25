@@ -289,17 +289,21 @@ min-height: 60px;
 """
 
 with gr.Blocks(css=css) as demo:
-    gr.Markdown(TITLE)
+    gr.Markdown("SUTD x SUNS Shop Design Generator")
     with gr.Tabs():
         with gr.TabItem('Train'):
-            # create_training_demo(trainer, pipe)
+            gr.Markdown('''
+            - You can use this tab to upload models later if you choose not to upload models in training time or if upload in training time failed.
+            ''')
         with gr.TabItem('Generate'):
-            # create_inference_demo(pipe, HF_TOKEN)
+            gr.Markdown('''
+            - You can use this tab to upload models later if you choose not to upload models in training time or if upload in training time failed.
+            ''')
         with gr.TabItem('Visualize'):
             gr.Markdown('''
             - You can use this tab to upload models later if you choose not to upload models in training time or if upload in training time failed.
             ''')
-            # create_upload_demo(HF_TOKEN)
+            #create_upload_demo(HF_TOKEN)
     with gr.Column(elem_id="col-container"):
         if is_shared_ui:
             top_description = gr.HTML(f'''
