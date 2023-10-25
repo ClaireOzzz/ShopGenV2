@@ -6,11 +6,12 @@ import requests
 import subprocess
 from subprocess import getoutput
 from huggingface_hub import snapshot_download, HfApi, create_repo
-api = HfApi()
+# api = HfApi()
 
-hf_token = os.environ.get("HF_TOKEN_WITH_WRITE_PERMISSION")
+# hf_token = os.environ.get("HF_TOKEN_WITH_WRITE_PERMISSION")
 
-is_shared_ui = True if "fffiloni/train-dreambooth-lora-sdxl" in os.environ['SPACE_ID'] else False
+#is_shared_ui = True if "fffiloni/train-dreambooth-lora-sdxl" in os.environ['SPACE_ID'] else False
+is_shared_ui = True
 
 is_gpu_associated = torch.cuda.is_available()
 
@@ -299,9 +300,7 @@ with gr.Blocks(css=css) as demo:
                         A T4 costs <strong>US$0.60/h</strong>, so it should cost < US$1 to train most models.
                     </p>
                     <p class="actions">
-                        <a href="https://huggingface.co/spaces/{os.environ['SPACE_ID']}?duplicate=true">
-                            <img src="https://huggingface.co/datasets/huggingface/badges/resolve/main/duplicate-this-space-lg-dark.svg" alt="Duplicate this Space" />
-                        </a>
+                       
                         to start training your own image model
                     </p>
                 </div>
