@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + React</title>
+    <style>
+      /* Add a style block to set z-index for the link */
+      a {
+        position: fixed; /* Make the link fixed position */
+        top: 10px; /* Adjust the top position as needed */
+        left: 10px; /* Adjust the left position as needed */
+        z-index: 9999; /* Set a high z-index value */
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+    <!-- <a href="another-page.html">Go to Another Page</a> -->
+    <div id="dropzone" class="dropzone"></div>
+
+    <script
+      type="module"
+      src="https://gradio.s3-us-west-2.amazonaws.com/4.3.0/gradio.js"
+    ></script>
+   
+  </body>
+</html>

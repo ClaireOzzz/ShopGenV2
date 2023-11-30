@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<!-- <title>three.js webgl - multiple elements</title> -->
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link type="text/css" rel="stylesheet" href="./src/App.css">
+		<style>
+			* {
+				box-sizing: border-box;
+				-moz-box-sizing: border-box;
+                
+                /* top: -10%;
+                left: 50%;
+                transform: translate(-50%, 50%); */
+			}
+
+			body {
+				background-color: #fff;
+				color: #444;
+			}
+
+			a {
+				color: #08f;
+			}
+
+			#content {
+				position: absolute;
+				top: 0; width: 100%;
+				z-index: 1;
+				padding: 3em 3rem 0 3rem ;
+			}
+
+			#c {
+				position: absolute;
+				left: 0;
+				width: 100%;
+				height: 100%;
+			}
+
+			.list-item {
+				display: inline-block;
+				margin: 1em;
+				padding: 1em;
+				box-shadow: 1px 2px 4px 0px rgba(0,0,0,0.25);
+			}
+
+			.list-item > div:nth-child(1) {
+				width: 350px;
+				height: 220px;
+			}
+
+			.list-item > div:nth-child(2) {
+				color: #888;
+				font-family: sans-serif;
+				font-size: large;
+				width: 200px;
+				margin-top: 0.5em;
+			}
+		</style>
+	</head>
+	<body>
+        
+		<canvas id="c"></canvas>
+		<div id="content">
+			<!-- <div id="info"><a href="https://threejs.org" target="_blank" rel="noopener">three.js</a> - multiple elements - webgl</div> -->
+		</div>
+
+		<script type="importmap">
+			{
+				"imports": {
+					"three": "../build/three.module.js",
+					"three/addons/": "./jsm/"
+				}
+			}
+		</script>
+
+		<script type="module">
+
+			import * as THREE from 'three';
+			import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+		
+			let canvas, renderer;
+			const scenes = [];
+		
+			async function fetchImages() {
+				const response = await fetch('./images/names.json');
+				console.log(response)
+				const imageFiles = await response.json();
+		
+				const imagePairs = pairImages(imageFiles);
+				init(imagePairs);
+				animate();
+			}
+		
+			function pairImages(imageFiles) {
+				const resultImages = imageFiles.filter(file => file.startsWith('result'));
+				console.log(resultImages)
+				const imagePairs = [];
+		
+				resultImages.forEach(resultImage => {
+					const resultNumber = resultImage.match(/\d+/)[0];
+					const depthImage = `depth${resultNumber}.png`;
+		
+					if (imageFiles.includes(depthImage)) {
+						imagePairs.push({
+							map: `./images/${resultImage}`,
+							depthMap: `./images/${depthImage}`
+						});
+					}
+				});
+		
+				return imagePairs;
+			}
+		
+			function init(imagePairs) {
+		
+				canvas = document.getElementById( 'c' );
+				let amap = new THREE.TextureLoader().load("result.png")
+				let dmap = new THREE.TextureLoader().load("depth.png")
+				const settings = {
+					metalness: 0.0,
+					roughness: 1,
+					//ambientIntensity: 0,
+					displacementScale: 5, 
+					displacementBias: -0.5,
+				};
+		
+				const geometries = [
+					new THREE.PlaneGeometry( 10, 10, 512, 512 ),
+				];
+		
+				const content = document.getElementById( 'content' );
+				
+				for (let i = 0; i < imagePairs.length; i++) {
+					const scene = new THREE.Scene();
+		
+					// make a list item
+					const element = document.createElement( 'div' );
+					element.className = 'list-item';
+		
+					const sceneElement = document.createElement( 'div' );
+					element.appendChild( sceneElement );
+		
+					scene.userData.element = sceneElement;
+					content.appendChild( element );
+		
+					const camera = new THREE.PerspectiveCamera( 40, 1, 1, 10 );
+					camera.position.z = 12.5;
+					scene.userData.camera = camera;
+		
+					const controls = new OrbitControls( scene.userData.camera, scene.userData.element );
+					controls.minDistance = 2;
+					controls.maxDistance = 5;
+					controls.enablePan = false;
+					controls.enableZoom = false;
+					scene.userData.controls = controls;
+		
+					window.addEventListener("mousemove", onmousemove, false);
+					var plane = new THREE.Plane(new THREE.Vector3(1, 1, 0), 2); 
+					var raycaster = new THREE.Raycaster(); 
+					var mouse = new THREE.Vector2();       
+					var intersectPoint = new THREE.Vector3();
+		
+					function onmousemove(event) {
+						mouse.x = (event.clientX / window.innerWidth)  - 1;
+						mouse.y = -(event.clientY / window.innerHeight)- 1;
+						raycaster.setFromCamera(mouse, camera);
+						raycaster.ray.intersectPlane(plane, intersectPoint);
+						mesh.lookAt(intersectPoint);
+					}
+		
+					const geometry = geometries[ geometries.length * Math.random() | 0 ];
+				
+					const material = new THREE.MeshStandardMaterial( {
+						map: new THREE.TextureLoader().load(imagePairs[i].map),
+						displacementMap: new THREE.TextureLoader().load(imagePairs[i].depthMap),
+						emissive: 0xffffff,
+						emissiveIntensity: 0.9, 
+						emissiveMap :  new THREE.TextureLoader().load(imagePairs[i].map),
+						roughness: settings.roughness,
+						metalness: settings.metalness,
+						displacementScale: settings.displacementScale,
+						displacementBias: settings.displacementBias,
+						side: THREE.DoubleSide
+					} );
+		
+					const mesh = new THREE.Mesh( geometry, material );
+					mesh.scale.set(0.6,0.6,0.6)
+					mesh.frustrumCulled = false
+					mesh.position.set(0,0,3)
+					scene.add( mesh );
+					scenes.push( scene );
+				}
+		
+				renderer = new THREE.WebGLRenderer( { canvas: canvas, antialias: true } );
+				renderer.setClearColor( 0x000000, 0 );
+				renderer.setPixelRatio( window.devicePixelRatio );
+			}
+		
+			function updateSize() {
+				const width = canvas.clientWidth;
+				const height = canvas.clientHeight;
+		
+				if ( canvas.width !== width || canvas.height !== height ) {
+					renderer.setSize( width, height, false );
+				}
+			}
+		
+			function animate() {
+				render();
+				requestAnimationFrame( animate );
+			}
+		
+			function render() {
+				updateSize();
+		
+				canvas.style.transform = `translateY(${window.scrollY}px)`;
+		
+				renderer.setClearColor( 0xffffff );
+				renderer.setScissorTest( false );
+				renderer.clear();
+		
+				renderer.setClearColor( 0xe0e0e0 );
+				renderer.setScissorTest( true );
+		
+				scenes.forEach( function ( scene ) {
+					const element = scene.userData.element;
+					const rect = element.getBoundingClientRect();
+		
+					if ( rect.bottom < 0 || rect.top > renderer.domElement.clientHeight ||
+						 rect.right < 0 || rect.left > renderer.domElement.clientWidth ) {
+						return;
+					}
+		
+					const width = rect.right - rect.left;
+					const height = rect.bottom - rect.top;
+					const left = rect.left;
+					const bottom = renderer.domElement.clientHeight - rect.bottom;
+		
+					renderer.setViewport( left, bottom, width, height );
+					renderer.setScissor( left, bottom, width, height );
+		
+					const camera = scene.userData.camera;
+					renderer.render( scene, camera );
+				});
+			}
+		
+			fetchImages();
+		
+		</script>
+
+	</body>
+</html>

@@ -1,0 +1,172 @@
+html
+#root {
+  /* max-width: 1280px;
+  margin: 0 auto; */
+  width: 100%;
+  /* padding: 2rem 2rem 2rem 2rem; */
+  text-align: center;
+  font-family: 'Montserrat', sans-serif;
+  color: #707070;
+  /* font-size: 1.3vw; */
+  --darkteal: #1fcfbb;
+  --teal:#99F6E4;
+  --lightteal: rgb(16, 16, 16);
+  --gray:#D1D5DB;
+  --lightgray: #E5E7EB;
+  position: absolute;
+  top:50px;
+  /* overflow-x: hidden; */
+}
+/* 
+canvas {
+  position: absolute;
+  top: -10%;
+  left: 50%;
+  transform: translate(-50%, 50%);
+} */
+
+.centered-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 70%;
+  left: 50%;
+  transform: translate(-50%, 50%);
+  z-index: 100;
+  position: absolute;
+}
+
+.centered-container :hover {
+  background-color: var(--teal);
+  border-color: transparent;
+}
+
+.centered-container :focus :active {
+  border-color: transparent;
+}
+
+.centered-container button {
+  background-color: var(--darkteal);
+  outline: none; /* Remove outline on button */
+}
+
+.image-generator-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px;
+}
+
+.buttonContainer {
+  top:0;
+  position: relative;
+  display: flex;
+  gap: 5%;
+  padding-left: 60%;
+
+}
+
+.buttonGroup {
+  width: 100px;
+}
+
+.circularButton {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--darkteal);
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  /* padding: 0px; */
+  top:0;
+  position: relative;
+  display: flex;
+  justify-content: space-around;
+}
+
+.buttonText {
+  margin-top: 20px;
+  top:0;
+  position: relative;
+}
+/* App.css */
+.visible {
+  display: block;
+}
+
+.hidden {
+  display: none;
+}
+
+
+.logo{
+  top:0;
+  position: absolute;
+  left:0;
+  padding: 0 2% 2% 2%;
+}
+
+.form-container {
+  margin-bottom: 20px;
+}
+
+label {
+  margin-right: 10px;
+}
+
+input {
+  margin-right: 10px;
+}
+
+.image-container img {
+  max-width: 100%;
+  height: auto;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin-top: 10px;
+}
+
+button {
+  position: relative;
+  padding: 5%;
+  background-color: #007bff;
+  border-radius: 5%;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, 50%);
+}
+
+
+
+
+.container {
+  max-width: 600px;
+  margin: auto;
+  padding: 20px;
+  text-align: center;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+label {
+  font-weight: bold;
+}
+
+.image-box {
+  margin-top: 20px;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
