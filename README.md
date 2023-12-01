@@ -1,6 +1,6 @@
 ---
-title: SD-XL + Control LoRas
-emoji: 🦀
+title: ShopGenV2
+emoji: 🎃
 colorFrom: green
 colorTo: indigo
 sdk: gradio
