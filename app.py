@@ -171,6 +171,8 @@ def infer( use_custom_model, model_name, weight_name, custom_lora_weight, image_
 
     if instance_prompt == 'cmic':
       prompt = instance_prompt + 'peranakan' + prompt + 'in comic style'
+    if instance_prompt == 'bnwhouse':
+      prompt = instance_prompt + 'peranakan' + prompt + 'minimalist'
     else:
       prompt = instance_prompt + 'peranakan' + prompt
     negative_prompt = negative_prompt
@@ -494,27 +496,16 @@ with gr.Blocks(theme=theme, css=css) as demo:
             outputs=[previous_model, model_status, weight_name],
             queue=False
         )
-            # Define a function to handle the visibility of components
-        def handle_visibility():
-            use_custom_model.visible = False
-            custom_model_box.visible = False
-            load_model_btn.visible = False
-            image_in.visible = False
-            prompt.visible = False
-            
+       
 
         submit_btn.click(
             fn=infer,
             inputs=[use_custom_model, custom_model, weight_name, custom_lora_weight, image_in, prompt, negative_prompt,
                     preprocessor, controlnet_conditioning_scale, guidance_scale, inf_steps, seed],
             outputs=[result, last_used_seed],
+            
         )
 
-        submit_btn.click(
-            fn=handle_visibility,
-            inputs=[],
-            outputs=[],
-        )
 
 # return demo
 demo.queue().launch(share=True)

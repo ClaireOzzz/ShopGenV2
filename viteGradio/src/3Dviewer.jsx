@@ -146,7 +146,8 @@ function Viewer3D(props) {
           "Plain Test",
           "Street Corner",
           "A Peranakan Garden",
-          "Peranakan cafe"
+          "Peranakan cafe",
+          "Designer Studio"
         ]
         ) ;
       }  
@@ -161,7 +162,7 @@ function Viewer3D(props) {
     
     function saveScript() {
       // localStorage.clear();
-      //localStorage.script = JSON.stringify(newTitleList) ;
+      localStorage.script = JSON.stringify(newTitleList) ;
     }
   
     return (
