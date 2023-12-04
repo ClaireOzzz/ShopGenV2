@@ -1,152 +1,172 @@
 import * as THREE from 'three';
-
-import MyTexture from  "./../images/result1.png";
-import MyDepth from  "./../images/depth1.png";
+import {useEffect, useState} from 'react';
 
 import './App.css';
- const renderer = new THREE.WebGLRenderer({ antialias: true });
+const renderer = new THREE.WebGLRenderer({ antialias: true });
 
-function Render3D(isVisible) {
-    let mesh;
-    let material;
-    let image_ar;
 
-    const settings = {
-        metalness: 0,
-        roughness: 10,
-        ambientIntensity: 0,
-        displacementScale: 4, 
-        displacementBias: -0.5,
-    };
+async function loadTextures() {
+  const response = await fetch('../images/names.json');
+  const names = await response.json();
 
-    // init
-    const camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 1000);
-    camera.position.z = 13.5;
+  let highestNumber = 0;
+  for (const name of names) {
+      const match = name.match(/(\d+)/);
+      if (match) {
+          const number = parseInt(match[0]);
+          if (number > highestNumber) {
+              highestNumber = number;
+          }
+      }
+  }
 
-    const scene = new THREE.Scene();
+  const resultImagePath = `../images/result${highestNumber}.png`;
+  const depthImagePath = `../images/depth${highestNumber}.png`;
 
-    scene.background = new THREE.Color( 0xffffff );
-    // const renderer = new THREE.WebGLRenderer( { antialias: true } );
-    renderer.setSize( window.innerWidth/2, window.innerHeight/2 );
-    renderer.setAnimationLoop( animation );
-    renderer.setPixelRatio( window.devicePixelRatio );
-    document.body.appendChild( renderer.domElement )
+  const amap = new THREE.TextureLoader().load(resultImagePath);
+  const dmap = new THREE.TextureLoader().load(depthImagePath);
 
-    // animation
-    window.addEventListener("mousemove", onmousemove, false);
-    var plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0.5);
-    var raycaster = new THREE.Raycaster(); //for reuse
-    var mouse = new THREE.Vector2();       //for reuse
-    var intersectPoint = new THREE.Vector3();//for reuse
+  return { amap, dmap };
+}
 
-    function onmousemove(event) {
-    //get mouse coordinates
-        mouse.x = (event.clientX / window.innerWidth)  - 1;
-        mouse.y = -(event.clientY / window.innerHeight)- 1;
-        raycaster.setFromCamera(mouse, camera);//set raycaster
-        raycaster.ray.intersectPlane(plane, intersectPoint); // find the point of intersection
-        mesh.lookAt(intersectPoint); // face our arrow to this point
-    }
+function createMesh(amap, dmap) {
+  const settings = {
+      metalness: 0,
+      roughness: 10,
+      ambientIntensity: 0,
+      displacementScale: 4,
+      displacementBias: -0.5,
+  };
 
-    function animation( time ) {
-        renderer.render( scene, camera );
-    }
+  const material = new THREE.MeshStandardMaterial({
+      color: 0xaaaaaa,
+      map: amap,
+      displacementMap: dmap,
+      emissive: 0xaaaaaa,
+      emissiveIntensity: 2.5,
+      emissiveMap: amap,
+      roughness: settings.roughness,
+      metalness: settings.metalness,
+      displacementScale: settings.displacementScale,
+      displacementBias: settings.displacementBias,
+      side: THREE.DoubleSide,
+  });
 
-    function onWindowResize() {
-        const aspect = window.innerWidth / window.innerHeight;
-        camera.aspect = aspect;
-        camera.updateProjectionMatrix();
+  const geometry = new THREE.PlaneGeometry(10, 10, 512, 512);
+  const mesh = new THREE.Mesh(geometry, material);
+  mesh.scale.x = window.innerWidth / 1000;
+  mesh.frustrumCulled = false;
+  mesh.position.set(0.6, 0.8, 0);
 
-        renderer.setSize( window.innerWidth/2, window.innerHeight/2 );
-    }
-    window.addEventListener( 'resize', onWindowResize );
-
-    const image = new Image();
-    const image2 = new Image();
-    (image.onload) = function() { 
-
-        if (mesh) {
-            mesh.geometry.dispose();
-            mesh.material.dispose();
-            scene.remove( mesh );
-        }
-        
-        let amap = new THREE.TextureLoader().load("../images/result1.png")
-		let dmap = new THREE.TextureLoader().load("../images/depth1.png")
-       
-        // material
-        material = new THREE.MeshStandardMaterial( {
-            color: 0xaaaaaa,
-            map: amap,
-            displacementMap: dmap,
-            emissive: 0xaaaaaa,
-            emissiveIntensity: 2.5, 
-            emissiveMap :  amap,
-            roughness: settings.roughness,
-            metalness: settings.metalness,
-            displacementScale: settings.displacementScale,
-            displacementBias: settings.displacementBias,
-            side: THREE.DoubleSide
-        } );
-
-        // generating geometry and add mesh to scene
-        const geometry = new THREE.PlaneGeometry( 10, 10, 512, 512 );
-        mesh = new THREE.Mesh( geometry, material );
-        mesh.scale.x = window.innerWidth/1000;
-        mesh.frustrumCulled = false
-        mesh.position.set(0.6,0.8,0)
-        scene.add( mesh );
-        
-    }
-    image.src = MyTexture;
-    image2.src = MyDepth;
+  return mesh;
 }
 
 function Viewer3D(props) {
-    // console.log("called ")
+  const [loaded, setLoaded] = useState(false);
+  var isVisible = props.isVisible
+  loadTextures()
+  function Render3D() {
+
+    renderer.setSize(0, 0);
     renderer.clear();
-    renderer.setSize( 0, 0);
+      const render = async () => {
+          const { amap, dmap } = await loadTextures();
+          const mesh = createMesh(amap, dmap);
 
+          // init
+          const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
+          camera.position.z = 13.5;
+
+          const scene = new THREE.Scene();
+          scene.background = new THREE.Color(0xffffff);
+          renderer.setSize(window.innerWidth / 2, window.innerHeight / 2);
+          renderer.setAnimationLoop(animation);
+          renderer.setPixelRatio(window.devicePixelRatio);
+          document.body.appendChild(renderer.domElement);
+
+          // animation
+          window.addEventListener('mousemove', onmousemove, false);
+          const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0.5);
+          const raycaster = new THREE.Raycaster();
+          const mouse = new THREE.Vector2();
+          const intersectPoint = new THREE.Vector3();
+
+          function onmousemove(event) {
+              mouse.x = (event.clientX / window.innerWidth) - 1;
+              mouse.y = -(event.clientY / window.innerHeight) - 1;
+              raycaster.setFromCamera(mouse, camera);
+              raycaster.ray.intersectPlane(plane, intersectPoint);
+              mesh.lookAt(intersectPoint);
+          }
+
+          function animation(time) {
+              renderer.render(scene, camera);
+          }
+
+          function onWindowResize() {
+              const aspect = window.innerWidth / window.innerHeight;
+              camera.aspect = aspect;
+              camera.updateProjectionMatrix();
+              renderer.setSize(window.innerWidth / 2, window.innerHeight / 2);
+          }
+
+          window.addEventListener('resize', onWindowResize);
+
+          // Load the mesh into the scene
+          scene.add(mesh);
+
+          setLoaded(true);
+      };
+
+      render();
+
+      // Cleanup function
+      return () => {
+          // Dispose of renderer and its resources
+          renderer.dispose();
+          renderer.setSize(0, 0);
+          renderer.clear();
+         
+      };
+    }
+    
+    if (isVisible==false) {
+
+    renderer.setSize(0, 0);
+    renderer.clear();
+    }
+    var newTitleList = null
     function updateTitles() {
-        const titleInput = document.getElementById('titleInput');
-        const newTitle = titleInput.value;
-      
-        // Fetch existing titles
-        fetch('../images/titles.json')
-          .then(response => response.json())
-          .then(existingTitles => {
-            // Update titles array
-            existingTitles.push(newTitle);
-            console.log("existingTitles ", existingTitles)
-            // Update titles.json file
-            fetch('../images/titles.json', {
-              method: 'PUT',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              mode: "cors",
-              body: JSON.stringify(existingTitles),
-            })
-              .then(response => response.json())
-              .then(data => {
-                console.log('Titles updated:', data);
-                // Optionally, you can clear the input field after updating
-                titleInput.value = '';
-              })
-              .catch(error => {
-                console.error('Error updating titles:', error);
-              });
-          })
-          .catch(error => {
-            console.error('Error fetching existing titles:', error);
-          });
-      }
+      const titleInput = document.getElementById('titleInput');
+      const newTitle = titleInput.value;
+      if (!localStorage.script) {
+        localStorage.script = JSON.stringify([
+          "The Original One",
+          "My Lantern Shop",
+          "Plain Test",
+          "Street Corner",
+          "A Peranakan Garden",
+          "Peranakan cafe"
+        ]
+        ) ;
+      }  
+      //localStorage.clear();
+      newTitleList = JSON.parse(localStorage.script) ;
+      console.log("hellp", newTitleList);
+      // newTitleList.push(newTitle);
+      // console.log(newTitleList)
 
-      var isVisible = props.isVisible;
+    saveScript();
+    }
+    
+    function saveScript() {
+      // localStorage.clear();
+      //localStorage.script = JSON.stringify(newTitleList) ;
+    }
   
     return (
       <>
-        {isVisible ? (
+        { isVisible ? (
             <div>
                 <div style={{ top: '-10%', position: 'static', display: 'inline-block' }}>
                     <Render3D isVisible={isVisible} />
@@ -156,14 +176,18 @@ function Viewer3D(props) {
                 </div>
                 {/* Add input field and button */}
                 <div style={{ position: 'fixed', top: '70%', left: '50%', transform: 'translateX(-50%)', textAlign: 'center', width:'90%' }}>
-                    <input type="text" id="titleInput" placeholder="Enter a title for your shop" style={{ margin:'0', width:'20%', scale:'1.8' }} />
+                    <input type="text" id="titleInput" placeholder="Enter a title for your shop" className='inputPrompt' />
                     <button 
-                    onClick={() => props.onPageButtonClick('Gallery')}
+                    onClick={() => {
+                        props.onPageButtonClick('Gallery');
+                        updateTitles();
+                    }}
                     style={{ position:'fixed', textAlign: 'center', marginTop:'1%' }} >Next</button>
                 </div>
             </div>
+            
         ) : null}
-       {/* <iframe src="./../another-page.html" width="100%" height="1000px" frameborder="0"></iframe> */}
+     
       </>
     );
   }

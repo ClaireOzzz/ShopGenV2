@@ -45,10 +45,12 @@ function PromptPage(props) {
               <h3>allImages</h3>
             </div>
           </div>
-        {/* <iframe src="./../another-page.html" width="100%" height="1000px" frameBorder="0"></iframe> */}
         
+          {/* <iframe style={{position:'fixed', top: '10%', left:'0', zIndex:'3000', scale:'0.9'}}
+                src="./../another-page.html" width="100%" height="1000px" frameborder="0"></iframe>
+         */}
 
-        <div className='BottomBar'style={{backgroundColor: 'transparent'}}  >
+        <div className='BottomBar'style={{ zIndex:'3001'}}  >
           <img src="./SUNSbtm.png" className="logoBtm" alt="SUNS" style={{top:'82%', position:'fixed', width: '100px'}} />
         </div>
       

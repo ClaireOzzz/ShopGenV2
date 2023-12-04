@@ -85,12 +85,11 @@
 		
 			let canvas, renderer;
 			const scenes = [];
-			let titles = [];
-
-			async function fetchTitles() {
-				const response = await fetch('./images/titles.json');
-				titles = await response.json();
-			}
+			// let titles = [];
+			// async function fetchTitles() {
+			// 	const response = await fetch('./images/titles.json');
+			// 	titles = await response.json();
+			// }
 
 			async function fetchImages() {
 				const response = await fetch('./images/names.json');
@@ -98,14 +97,14 @@
 				const imageFiles = await response.json();
 		
 				const imagePairs = pairImages(imageFiles);
-				await fetchTitles();
+				// await fetchTitles();
 				init(imagePairs);
 				animate();
 			}
 		
 			function pairImages(imageFiles) {
 				const resultImages = imageFiles.filter(file => file.startsWith('result'));
-				console.log(resultImages)
+				//console.log(resultImages)
 				const imagePairs = [];
 		
 				resultImages.forEach(resultImage => {
@@ -122,6 +121,16 @@
 		
 				return imagePairs;
 			}
+			if (!localStorage.script) {
+			localStorage.script = JSON.stringify([
+			"The Original One",
+			"My Lantern Shop",
+			"Plain Test",
+			"Street Corner",
+			"A Peranakan Garden",
+			"Peranakan cafe"
+			]
+			) };
 		
 			function init(imagePairs) {
 		
@@ -139,7 +148,8 @@
 				];
 		
 				const content = document.getElementById( 'content' );
-				
+				const scriptData = JSON.parse(localStorage.script);
+
 				for (let i = 0; i < imagePairs.length; i++) {
 					const scene = new THREE.Scene();
 		
@@ -150,10 +160,10 @@
 					const sceneElement = document.createElement( 'div' );
 					element.appendChild( sceneElement );
 
+					const description = scriptData[i] ? scriptData[i] : '';
 					const descriptionElement = document.createElement('div');
-					descriptionElement.innerText = titles[i]
+        			descriptionElement.innerText = description;
 					element.appendChild(descriptionElement);
-
 		
 					scene.userData.element = sceneElement;
 					content.appendChild( element );
@@ -260,6 +270,7 @@
 			}
 		
 			fetchImages();
+			//console.log("localStorage ", localStorage)
 		
 		</script>
 

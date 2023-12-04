@@ -54,7 +54,6 @@ else:
 
 generated_files = []
 
-#instance_prompt = ''
 
 def check_use_custom_or_no(value):
     if value is True:
@@ -103,15 +102,15 @@ def load_model(model_name):
 
     print(f"Safetensors available: {sfts_available_files}")
 
-    return model_name, "Model Ready", gr.update(choices=sfts_available_files, value=sfts_available_files[0], visible=False), gr.update(value=instance_prompt, visible=True)
+    return model_name, "Model Ready", gr.update(choices=sfts_available_files, value=sfts_available_files[0], visible=False)
 
 def custom_model_changed(model_name, previous_model):
     if model_name == "" and previous_model == "" :
         status_message = ""      
     elif model_name != previous_model:
-        status_message = "model changed, please reload before any new run"
+        status_message = "Load the Model!"
     else:
-        status_message = "model ready"
+        status_message = "Model ready"
     return status_message
 
 def resize_image(input_path, output_path, target_height):
@@ -154,7 +153,7 @@ def predict(image, counter):
 
 
 @spaces.GPU
-def infer(use_custom_model, model_name, weight_name, custom_lora_weight, image_in, prompt, negative_prompt, preprocessor, controlnet_conditioning_scale, guidance_scale, inf_steps, seed, progress=gr.Progress(track_tqdm=True)):
+def infer( use_custom_model, model_name, weight_name, custom_lora_weight, image_in, prompt, negative_prompt, preprocessor, controlnet_conditioning_scale, guidance_scale, inf_steps, seed, progress=gr.Progress(track_tqdm=True)):
 
     pipe = StableDiffusionXLControlNetPipeline.from_pretrained(
         "stabilityai/stable-diffusion-xl-base-1.0",
@@ -166,10 +165,11 @@ def infer(use_custom_model, model_name, weight_name, custom_lora_weight, image_i
     )
     
     pipe.to(device)
-    
-    # prompt = instance_prompt + 'peranakan' + prompt
-    prompt = prompt
-    #print(instance_prompt)
+    card = ModelCard.load(model_name)
+    repo_data = card.data.to_dict()
+    instance_prompt = repo_data.get("instance_prompt")
+
+    prompt = instance_prompt + 'peranakan shop' + prompt
     negative_prompt = negative_prompt
 
     
@@ -422,7 +422,7 @@ with gr.Blocks(theme=theme, css=css) as demo:
                                 label="model status",
                                 show_label=False,
                                 elem_id="status_info",
-                                visible=False
+                                visible=True
                             )
                         trigger_word = gr.Textbox(label="Trigger word", interactive=False, visible=False)
 
@@ -441,7 +441,7 @@ with gr.Blocks(theme=theme, css=css) as demo:
 
                 with gr.Column():
                     # with gr.Group():
-                    prompt = gr.Textbox( label="Prompt", show_label=False, placeholder="Add your trigger word here + prompt")
+                    prompt = gr.Textbox( label="Prompt", show_label=False, placeholder="eg. An antique cafe")
 
                     with gr.Accordion(label="Advanced Options", open=False, visible=False):
                         # with gr.Group():
@@ -471,9 +471,6 @@ with gr.Blocks(theme=theme, css=css) as demo:
 
             submit_btn = gr.Button("Submit")
 
-            # label = gr.Label(label="Loader")
-            # submit_btn.click(infer, outputs=[label])
-
             result = gr.Image(label="Result", visible=True)
 
         use_custom_model.change(
@@ -491,11 +488,10 @@ with gr.Blocks(theme=theme, css=css) as demo:
         load_model_btn.click(
             fn=load_model,
             inputs=[custom_model],
-            outputs=[previous_model, model_status, weight_name, trigger_word],
+            outputs=[previous_model, model_status, weight_name],
             queue=False
         )
-
-        # Define a function to handle the visibility of components
+            # Define a function to handle the visibility of components
         def handle_visibility():
             use_custom_model.visible = False
             custom_model_box.visible = False
@@ -512,9 +508,10 @@ with gr.Blocks(theme=theme, css=css) as demo:
         )
 
         submit_btn.click(
-                    fn=handle_visibility,
-                    inputs=[],
-                    outputs=[],
-                )
+            fn=handle_visibility,
+            inputs=[],
+            outputs=[],
+        )
+
 # return demo
 demo.queue().launch(share=True)

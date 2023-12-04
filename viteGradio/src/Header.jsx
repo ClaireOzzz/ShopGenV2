@@ -34,7 +34,7 @@ function Header({ onPageButtonClick, currentPage }) {
             >
               3
             </button>
-            <div className="buttonText">Generate</div>
+            <div className="buttonText">Result</div>
           </div>
 
           <div className={`buttonGroup ${currentPage === 'Gallery' ? 'active' : ''}`}>
