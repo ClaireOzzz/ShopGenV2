@@ -46,9 +46,7 @@ function PromptPage(props) {
             </div>
           </div>
         
-          {/* <iframe style={{position:'fixed', top: '10%', left:'0', zIndex:'3000', scale:'0.9'}}
-                src="./../another-page.html" width="100%" height="1000px" frameborder="0"></iframe>
-         */}
+        
 
         <div className='BottomBar'style={{ position:'fixed' ,zIndex:'3001'}}  >
           <img src="./SUNSbtm.png" className="logoBtm" alt="SUNS" style={{top:'82%', position:'fixed', width: '100px'}} />
