@@ -169,7 +169,7 @@ def infer( use_custom_model, model_name, weight_name, custom_lora_weight, image_
     repo_data = card.data.to_dict()
     instance_prompt = repo_data.get("instance_prompt")
 
-    prompt = instance_prompt + 'peranakan shop' + prompt
+    prompt = instance_prompt + 'peranakan' + prompt
     negative_prompt = negative_prompt
 
     
@@ -441,7 +441,7 @@ with gr.Blocks(theme=theme, css=css) as demo:
 
                 with gr.Column():
                     # with gr.Group():
-                    prompt = gr.Textbox( label="Prompt", show_label=False, placeholder="eg. An antique cafe")
+                    prompt = gr.Textbox( label="Prompt", show_label=False, placeholder="Add your trigger word here + prompt")
 
                     with gr.Accordion(label="Advanced Options", open=False, visible=False):
                         # with gr.Group():
