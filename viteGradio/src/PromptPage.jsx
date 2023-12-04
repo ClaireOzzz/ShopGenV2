@@ -24,8 +24,8 @@ function PromptPage(props) {
 
   return (
     <>
-      <div className={props.isVisible ? 'visible' : 'hidden'} style={{ overflow: 'hidden' }} >
-        <gradio-app eager="true" src="https://aa3ea81ff3eadca8ae.gradio.live/"></gradio-app>
+      <div className={props.isVisible ? 'visible' : 'hidden'} style={{ overflow: 'hidden'}} >
+        <gradio-app eager="true" src="https://be4cddcf6d384e6f70.gradio.live" ></gradio-app>
         <button className='nextbutton'
           onClick={() => props.onPageButtonClick('Generate')}
          >Next</button>
@@ -36,13 +36,13 @@ function PromptPage(props) {
               <h3>Porcelain</h3>
             </div>
             <div className="modelpanel panel2">
-              <h3>oldComic</h3>
+              <h3>Comic</h3>
             </div>
             <div className="modelpanel panel3">
               <h3>Black & White House</h3>
             </div>
             <div className="modelpanel panel4">
-              <h3>allImages</h3>
+              <h3>All Peranakan Data</h3>
             </div>
           </div>
         
@@ -50,7 +50,7 @@ function PromptPage(props) {
                 src="./../another-page.html" width="100%" height="1000px" frameborder="0"></iframe>
          */}
 
-        <div className='BottomBar'style={{ zIndex:'3001'}}  >
+        <div className='BottomBar'style={{ position:'fixed' ,zIndex:'3001'}}  >
           <img src="./SUNSbtm.png" className="logoBtm" alt="SUNS" style={{top:'82%', position:'fixed', width: '100px'}} />
         </div>
       

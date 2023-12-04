@@ -216,22 +216,19 @@ button:focus {
     left: 96%;
   }
 }
-
 .modelcontainer {
   z-index: 2000;
   display: flex;
   width: 41vw;
   position: fixed;
   left: 5%;
-  top:45%;
-  /* transform: translate(-50%, 50%); */
+  top: 45%;
 }
 
 .modelpanel {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  background-color: #d8d8d8;
   height: 40vh;
   border-radius: 25px;
   color: #fff;
@@ -240,7 +237,6 @@ button:focus {
   margin: 3px;
   position: relative;
   transition: flex 700ms ease-in;
-
 }
 
 .modelpanel h3 {
@@ -252,27 +248,26 @@ button:focus {
   opacity: 0;
 }
 
+.modelpanel.panel1 {
+  background-image: url("porcelain.png");
+}
+
+.modelpanel.panel2 {
+  background-image: url("comic.png");
+}
+
+.modelpanel.panel3 {
+  background-image: url("bnw.png");
+}
+
+.modelpanel.panel4 {
+  background-image: url("all.png");
+}
+
 .modelpanel.active {
   background-color: #4edfce;
   flex: 5;
 }
-
-.modelpanel.active.panel1 {
-  background-image: url("porcelain.png");
-}
-
-.modelpanel.active.panel2 {
-  background-image: url("SUNSbtm.png");
-}
-
-.modelpanel.active.panel3 {
-  background-image: url("SUNSbtm.png");
-}
-
-.modelpanel.active.panel4 {
-  background-image: url("all.png");
-}
-
 
 .modelpanel.active h3 {
   opacity: 1;
@@ -281,17 +276,17 @@ button:focus {
 
 @media (max-width: 480px) {
   .modelcontainer {
-      width: 50vw;
+    width: 50vw;
   }
   .modelpanel:nth-of-type(4), .modelpanel:nth-of-type(4) {
-      display: none;
+    display: none;
   }
 }
 
 @media (max-width: 1600px) {
   .modelcontainer {
-      width: 48vw;
-      left: 1%;
-      top:45%;
+    width: 48vw;
+    left: 1%;
+    top: 45%;
   }
 }

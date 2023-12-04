@@ -169,7 +169,10 @@ def infer( use_custom_model, model_name, weight_name, custom_lora_weight, image_
     repo_data = card.data.to_dict()
     instance_prompt = repo_data.get("instance_prompt")
 
-    prompt = instance_prompt + 'peranakan' + prompt
+    if instance_prompt == 'cmic':
+      prompt = instance_prompt + 'peranakan' + prompt + 'in comic style'
+    else:
+      prompt = instance_prompt + 'peranakan' + prompt
     negative_prompt = negative_prompt
 
     

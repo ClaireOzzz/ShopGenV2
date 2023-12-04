@@ -152,9 +152,9 @@ function Viewer3D(props) {
       }  
       //localStorage.clear();
       newTitleList = JSON.parse(localStorage.script) ;
-      console.log("hellp", newTitleList);
-      // newTitleList.push(newTitle);
-      // console.log(newTitleList)
+      console.log("help", newTitleList);
+      newTitleList.push(newTitle);
+      console.log(newTitleList)
 
     saveScript();
     }
