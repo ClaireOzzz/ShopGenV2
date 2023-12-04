@@ -5,27 +5,52 @@ import Original from './components/original';
 import Header from './Header';
 import './App.css';
 
-function PromptPage({ isVisible }) {
-  const handleButtonClick = () => {
-    // Calculate the scroll position to scroll to half the page
-    const halfPageScroll = window.innerHeight * 0.8;
-    //console.log(window.scroll)
-    // Scroll down to half the page
-    window.scrollTo({
-      top: 1000,
-      behavior: 'smooth', // Add smooth scrolling animation
-    });
-  };
+function PromptPage(props) {
 
-  
+  const panels = document.querySelectorAll('.modelpanel');
+
+  panels.forEach(panel => {
+      panel.addEventListener('click', () => {
+          removeActiveClasses();
+          panel.classList.add('active');
+      });
+  });
+
+  function removeActiveClasses () {
+      panels.forEach(panel => {
+          panel.classList.remove('active');
+      })
+  }
 
   return (
     <>
-      <div className={isVisible ? 'visible' : 'hidden'} style={{ overflow: 'auto', maxHeight: '1000px' }}>
-        {/* <gradio-app eager="true" src="https://48d319625c8a1616e3.gradio.live/"></gradio-app> */}
-        <button onClick={handleButtonClick}>Scroll to Half Page</button>
-        <h1>LOADING</h1>
-        <iframe src="./../another-page.html" width="100%" height="1000px" frameBorder="0"></iframe>
+      <div className={props.isVisible ? 'visible' : 'hidden'} style={{ overflow: 'hidden' }} >
+        <gradio-app eager="true" src="https://aa3ea81ff3eadca8ae.gradio.live/"></gradio-app>
+        <button className='nextbutton'
+          onClick={() => props.onPageButtonClick('Generate')}
+         >Next</button>
+     
+
+          <div className="modelcontainer">
+            <div className="modelpanel panel1 active">
+              <h3>Porcelain</h3>
+            </div>
+            <div className="modelpanel panel2">
+              <h3>oldComic</h3>
+            </div>
+            <div className="modelpanel panel3">
+              <h3>Black & White House</h3>
+            </div>
+            <div className="modelpanel panel4">
+              <h3>allImages</h3>
+            </div>
+          </div>
+        {/* <iframe src="./../another-page.html" width="100%" height="1000px" frameBorder="0"></iframe> */}
+        
+
+        <div className='BottomBar'style={{backgroundColor: 'transparent'}}  >
+          <img src="./SUNSbtm.png" className="logoBtm" alt="SUNS" style={{top:'82%', position:'fixed', width: '100px'}} />
+        </div>
       
       </div>
     </>

@@ -1,10 +1,7 @@
 import * as THREE from 'three';
 
-// import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-// import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
-
-import MyTexture from  "./../images/result.png";
-import MyDepth from  "./../images/depth.png";
+import MyTexture from  "./../images/result1.png";
+import MyDepth from  "./../images/depth1.png";
 
 import './App.css';
  const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -15,38 +12,29 @@ function Render3D(isVisible) {
     let image_ar;
 
     const settings = {
-        metalness: 0.0,
-        roughness: 0.14,
-        ambientIntensity: 0.85,
-        displacementScale: 5, 
+        metalness: 0,
+        roughness: 10,
+        ambientIntensity: 0,
+        displacementScale: 4, 
         displacementBias: -0.5,
-        // emissive: 0xffffff,
     };
 
     // init
-    const camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 1000);
-    camera.position.z = 8.5;
+    const camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 1000);
+    camera.position.z = 13.5;
 
     const scene = new THREE.Scene();
 
-    // const ambientLight = new THREE.AmbientLight( 0xffffff, 4 );
-    // scene.add( ambientLight );
-
-    // const pointLight = new THREE.PointLight( 0xff0000, 1 );
-    // pointLight.position.z = 2500;
-    // scene.add( pointLight );
     scene.background = new THREE.Color( 0xffffff );
     // const renderer = new THREE.WebGLRenderer( { antialias: true } );
     renderer.setSize( window.innerWidth/2, window.innerHeight/2 );
     renderer.setAnimationLoop( animation );
-    // renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    // renderer.toneMappingExposure = 1;
-    // renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.setPixelRatio( window.devicePixelRatio );
     document.body.appendChild( renderer.domElement )
 
     // animation
     window.addEventListener("mousemove", onmousemove, false);
-    var plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0.5); // it's up to you how you will create THREE.Plane(), there are several methods
+    var plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0.5);
     var raycaster = new THREE.Raycaster(); //for reuse
     var mouse = new THREE.Vector2();       //for reuse
     var intersectPoint = new THREE.Vector3();//for reuse
@@ -65,7 +53,6 @@ function Render3D(isVisible) {
     }
 
     function onWindowResize() {
-
         const aspect = window.innerWidth / window.innerHeight;
         camera.aspect = aspect;
         camera.updateProjectionMatrix();
@@ -73,13 +60,6 @@ function Render3D(isVisible) {
         renderer.setSize( window.innerWidth/2, window.innerHeight/2 );
     }
     window.addEventListener( 'resize', onWindowResize );
-
-
-    // orbit controls
-    // const controls = new OrbitControls( camera, renderer.domElement );
-    // controls.enableZoom = false;
-    // controls.enableDamping = false;
-
 
     const image = new Image();
     const image2 = new Image();
@@ -91,29 +71,17 @@ function Render3D(isVisible) {
             scene.remove( mesh );
         }
         
-        image_ar = image.width / image.height ;
-        
-        const ctx = document.createElement('canvas').getContext('2d');
-        ctx.canvas.width = image.width;
-        ctx.canvas.height = image.height;
-        ctx.drawImage(image, 0, 0);
-        const myrgbmap = new THREE.CanvasTexture(ctx.canvas);
-
-        const ctx2 = document.createElement('canvas').getContext('2d');
-        ctx2.canvas.width = image2.width;
-        ctx2.canvas.height = image2.height;
-        ctx2.drawImage(image2, 0, 0);
-        const mydepthmap = new THREE.CanvasTexture(ctx2.canvas);
-
-        
+        let amap = new THREE.TextureLoader().load("../images/result1.png")
+		let dmap = new THREE.TextureLoader().load("../images/depth1.png")
+       
         // material
         material = new THREE.MeshStandardMaterial( {
             color: 0xaaaaaa,
-            map: myrgbmap,
-            displacementMap: mydepthmap,
-            emissive: 0xffffff,
-            emissiveIntensity: 0.9, 
-            emissiveMap :  myrgbmap,
+            map: amap,
+            displacementMap: dmap,
+            emissive: 0xaaaaaa,
+            emissiveIntensity: 2.5, 
+            emissiveMap :  amap,
             roughness: settings.roughness,
             metalness: settings.metalness,
             displacementScale: settings.displacementScale,
@@ -124,8 +92,9 @@ function Render3D(isVisible) {
         // generating geometry and add mesh to scene
         const geometry = new THREE.PlaneGeometry( 10, 10, 512, 512 );
         mesh = new THREE.Mesh( geometry, material );
-        mesh.scale.y = 1.0 / image_ar;
-        mesh.scale.multiplyScalar( 0.5);
+        mesh.scale.x = window.innerWidth/1000;
+        mesh.frustrumCulled = false
+        mesh.position.set(0.6,0.8,0)
         scene.add( mesh );
         
     }
@@ -133,16 +102,65 @@ function Render3D(isVisible) {
     image2.src = MyDepth;
 }
 
-function Viewer3D({ isVisible }) {
+function Viewer3D(props) {
     // console.log("called ")
     renderer.clear();
     renderer.setSize( 0, 0);
+
+    function updateTitles() {
+        const titleInput = document.getElementById('titleInput');
+        const newTitle = titleInput.value;
+      
+        // Fetch existing titles
+        fetch('../images/titles.json')
+          .then(response => response.json())
+          .then(existingTitles => {
+            // Update titles array
+            existingTitles.push(newTitle);
+            console.log("existingTitles ", existingTitles)
+            // Update titles.json file
+            fetch('../images/titles.json', {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              mode: "cors",
+              body: JSON.stringify(existingTitles),
+            })
+              .then(response => response.json())
+              .then(data => {
+                console.log('Titles updated:', data);
+                // Optionally, you can clear the input field after updating
+                titleInput.value = '';
+              })
+              .catch(error => {
+                console.error('Error updating titles:', error);
+              });
+          })
+          .catch(error => {
+            console.error('Error fetching existing titles:', error);
+          });
+      }
+
+      var isVisible = props.isVisible;
   
     return (
       <>
         {isVisible ? (
-            <div style={{ position: 'static', display: 'inline-block' }}>
-            <Render3D isVisible={isVisible} />
+            <div>
+                <div style={{ top: '-10%', position: 'static', display: 'inline-block' }}>
+                    <Render3D isVisible={isVisible} />
+                </div>
+                <div className='BottomBar' style={{position: 'fixed'}}>
+                    <img src="./SUNSbtm.png" className="logoBtm" alt="SUNS" style={{padding:'0.5% 1% 1% 1%'}} />
+                </div>
+                {/* Add input field and button */}
+                <div style={{ position: 'fixed', top: '70%', left: '50%', transform: 'translateX(-50%)', textAlign: 'center', width:'90%' }}>
+                    <input type="text" id="titleInput" placeholder="Enter a title for your shop" style={{ margin:'0', width:'20%', scale:'1.8' }} />
+                    <button 
+                    onClick={() => props.onPageButtonClick('Gallery')}
+                    style={{ position:'fixed', textAlign: 'center', marginTop:'1%' }} >Next</button>
+                </div>
             </div>
         ) : null}
        {/* <iframe src="./../another-page.html" width="100%" height="1000px" frameborder="0"></iframe> */}

@@ -14,16 +14,18 @@ html
   --gray:#D1D5DB;
   --lightgray: #E5E7EB;
   position: absolute;
-  top:50px;
+  top:20px;
   /* overflow-x: hidden; */
 }
-/* 
+
 canvas {
   position: absolute;
   top: -10%;
   left: 50%;
   transform: translate(-50%, 50%);
-} */
+  border: 2px solid #c1c1c1;
+  border-radius: 3%;
+}
 
 .centered-container {
   display: flex;
@@ -74,15 +76,18 @@ canvas {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: var(--darkteal);
+  background-color: var(--gray);
   color: #ffffff;
   border: none;
   cursor: pointer;
-  /* padding: 0px; */
   top:0;
   position: relative;
   display: flex;
   justify-content: space-around;
+}
+
+.activeButton{
+  background-color: var(--darkteal);
 }
 
 .buttonText {
@@ -99,12 +104,35 @@ canvas {
   display: none;
 }
 
-
 .logo{
   top:0;
   position: absolute;
   left:0;
   padding: 0 2% 2% 2%;
+}
+
+.logoBtm{
+  z-index: 2001;
+  top: -65px;
+  left: 50%;
+  transform: translate(-50%, 50%);
+  width: 100px;
+  position: absolute;
+  bottom: 0;
+  opacity: 70%;
+  padding: 1%;
+}
+
+.BottomBar{
+  position: relative;
+  z-index: 1000;
+  margin: 2px auto;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  border-top: 1px solid black;
+  height: 10%;
+  /* background-color: white; */
 }
 
 .form-container {
@@ -131,7 +159,8 @@ input {
 button {
   position: relative;
   padding: 5%;
-  background-color: #007bff;
+  color: black;
+  background-color: #1fcfbb;
   border-radius: 5%;
   color: #fff;
   border: none;
@@ -139,34 +168,114 @@ button {
   top: 50%;
   left: 50%;
   transform: translate(-50%, 50%);
+  outline:none;
 }
 
-
-
-
-.container {
-  max-width: 600px;
-  margin: auto;
-  padding: 20px;
-  text-align: center;
+button:focus {
+  outline: none !important;
+  outline-offset: none !important;
 }
 
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-label {
+.nextbutton {
+  position: fixed;
+  background-color: #54dece;
+  border-radius: 5%;
+  color: #000000;
   font-weight: bold;
+  border: none;
+  cursor: pointer;
+  top: 80%;
+  left: 93%;
+  transform: translate(-50%, 50%);
 }
 
-.image-box {
-  margin-top: 20px;
+.nextbutton:focus {
+  outline: none !important;
+  outline-offset: none !important;
 }
 
-img {
-  max-width: 100%;
-  height: auto;
+@media (max-width: 1600px) {
+  .nextbutton {
+    top: 80%;
+    left: 96%;
+  }
+}
+
+.modelcontainer {
+  z-index: 2000;
+  display: flex;
+  width: 41vw;
+  position: fixed;
+  left: 5%;
+  top:45%;
+  /* transform: translate(-50%, 50%); */
+}
+
+.modelpanel {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: #d8d8d8;
+  height: 40vh;
+  border-radius: 25px;
+  color: #fff;
+  cursor: pointer;
+  flex: 0.5;
+  margin: 3px;
+  position: relative;
+  transition: flex 700ms ease-in;
+
+}
+
+.modelpanel h3 {
+  font-size: 24px;
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  margin: 0;
+  opacity: 0;
+}
+
+.modelpanel.active {
+  background-color: #4edfce;
+  flex: 5;
+}
+
+.modelpanel.active.panel1 {
+  background-image: url("porcelain.png");
+}
+
+.modelpanel.active.panel2 {
+  background-image: url("SUNSbtm.png");
+}
+
+.modelpanel.active.panel3 {
+  background-image: url("SUNSbtm.png");
+}
+
+.modelpanel.active.panel4 {
+  background-image: url("all.png");
+}
+
+
+.modelpanel.active h3 {
+  opacity: 1;
+  transition: opacity 300ms ease-in 400ms;
+}
+
+@media (max-width: 480px) {
+  .modelcontainer {
+      width: 50vw;
+  }
+  .modelpanel:nth-of-type(4), .modelpanel:nth-of-type(4) {
+      display: none;
+  }
+}
+
+@media (max-width: 1600px) {
+  .modelcontainer {
+      width: 48vw;
+      left: 1%;
+      top:45%;
+  }
 }

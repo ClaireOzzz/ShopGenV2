@@ -1,9 +1,8 @@
-
 import os
-# os.system('pip install pip==23.3.0')
-# os.system('pip uninstall spaces -y')
-# os.system('pip install spaces==0.18.0')
-# os.system('pip install gradio==4.0.2')
+# os.system('pip3 install pip==23.3.0')
+# os.system('pip3 uninstall spaces -y')
+# os.system('pip3 install spaces==0.18.0')
+# os.system('pip3 install gradio==4.0.2')
 
 
 import gradio as gr
@@ -55,6 +54,7 @@ else:
 
 generated_files = []
 
+#instance_prompt = ''
 
 def check_use_custom_or_no(value):
     if value is True:
@@ -103,7 +103,7 @@ def load_model(model_name):
 
     print(f"Safetensors available: {sfts_available_files}")
 
-    return model_name, "Model Ready", gr.update(choices=sfts_available_files, value=sfts_available_files[0], visible=True), gr.update(value=instance_prompt, visible=True)
+    return model_name, "Model Ready", gr.update(choices=sfts_available_files, value=sfts_available_files[0], visible=False), gr.update(value=instance_prompt, visible=True)
 
 def custom_model_changed(model_name, previous_model):
     if model_name == "" and previous_model == "" :
@@ -167,11 +167,13 @@ def infer(use_custom_model, model_name, weight_name, custom_lora_weight, image_i
     
     pipe.to(device)
     
+    # prompt = instance_prompt + 'peranakan' + prompt
     prompt = prompt
+    #print(instance_prompt)
     negative_prompt = negative_prompt
 
-    if seed < 0 :
-        seed = random.randint(0, 423538377342)
+    
+    seed = random.randint(0, 423538377342)
     
     generator = torch.Generator(device=device).manual_seed(seed)
 
@@ -301,6 +303,15 @@ button#load_model_btn{
     top: -20px;
     z-index: 100;
 }
+
+button#component-38{
+    top: 0px;
+    background-color: #99F6E4; !important;
+}
+
+div#component-39{
+    top: 20px;
+}
 #status_info{
     font-size: 0.9em;
 }
@@ -357,136 +368,153 @@ theme = gr.themes.Soft(
     button_secondary_text_color_dark='*neutral_800'
 )
 
-#examples = [["examples/" + img] for img in os.listdir("examples/")]
 im = gr.Image(visible=False)
 
 with gr.Blocks(theme=theme, css=css) as demo:
-  with gr.Row():
-    with gr.Column(elem_id="col-container"):
-        
-        gr.HTML("""
-        <h2 style="text-align: left;">Choose a Style</h2>
-        <p style="text-align: left;">Our Pretrained Models can be found on Huggingface</p>
-                """)
+    with gr.Row():
+        with gr.Column(elem_id="col-container"):
+            
+            gr.HTML("""
+            <h2 style="text-align: left;">1. Choose a Style</h2>
+            <p style="text-align: left;">Our Pretrained Models can be found on Huggingface</p>
+            """)
 
-        use_custom_model = gr.Checkbox(label="Use a custom pre-trained LoRa model ? (optional)", visible = False, value=False, info="To use a private model, you'll need to duplicate the space with your own access token.")
+            use_custom_model = gr.Checkbox(label="Use a custom pre-trained LoRa model ? (optional)", visible=False, value=False, info="To use a private model, you'll need to duplicate the space with your own access token")
+
+            with gr.Blocks(visible=False) as custom_model_box:
+                with gr.Row():
+                    with gr.Column():
+                        if not is_shared_ui:
+                            your_username = api.whoami()["name"]
+                            my_models = api.list_models(author=your_username, filter=["diffusers", "stable-diffusion-xl", 'lora'])
+                            model_names = [item.modelId for item in my_models]
         
-        with gr.Blocks(visible=False) as custom_model_box:
+                        if not is_shared_ui:
+                            custom_model = gr.Dropdown(
+                                label = "Styles",
+                                info="",
+                                choices = model_names,
+                                allow_custom_value = True
+                                #placeholder = "username/model_id"
+                            )
+                        else:
+                            custom_model = gr.Textbox(
+                                label="Styles",
+                                placeholder="your_username/your_trained_model_name",
+                                info="Make sure your model is set to PUBLIC"
+                            )
+
+                        weight_name = gr.Dropdown(
+                            label="Safetensors file",
+                            # value="pytorch_lora_weights.safetensors",
+                            info="specify which one if model has several .safetensors files",
+                            allow_custom_value=True,
+                            visible=False
+                        )
+                    with gr.Column():
+                        with gr.Group():
+                            # load_model_btn = gr.Button("Load my model", elem_id="load_model_btn")
+                            previous_model = gr.Textbox(
+                                visible=False
+                            )
+
+                            model_status = gr.Textbox(
+                                label="model status",
+                                show_label=False,
+                                elem_id="status_info",
+                                visible=False
+                            )
+                        trigger_word = gr.Textbox(label="Trigger word", interactive=False, visible=False)
+
+            load_model_btn = gr.Button("Load my model", elem_id="load_model_btn")
+            image_in = gr.Image(sources="upload", type="filepath", value=("shop1.jpg"), visible=False)
+            # gr.Examples(
+            #   examples=[[os.path.join(os.path.dirname(__file__), "shop2.jpg")],[os.path.join(os.path.dirname(__file__), "shop3.jpg")]], inputs=im)
+
+        with gr.Column(elem_id="col-container"):
+            gr.HTML("""
+            <h2 style="text-align: left;">2. Input a Prompt!</h2>
+            <p style="text-align: left;">Negative prompts and other settings can be found in advanced options</p>
+            """)
+
             with gr.Row():
+
                 with gr.Column():
-                    if not is_shared_ui:
-                        your_username = api.whoami()["name"]
-                        my_models = api.list_models(author=your_username, filter=["diffusers", "stable-diffusion-xl", 'lora'])
-                        model_names = [item.modelId for item in my_models]
-    
-                    if not is_shared_ui:
-                        custom_model = gr.Dropdown(
-                            label = "Your custom model ID",
-                            info="You can pick one of your private models",
-                            choices = model_names,
-                            allow_custom_value = True
-                            #placeholder = "username/model_id"
+                    # with gr.Group():
+                    prompt = gr.Textbox( label="Prompt", show_label=False, placeholder="Add your trigger word here + prompt")
+
+                    with gr.Accordion(label="Advanced Options", open=False, visible=False):
+                        # with gr.Group():
+                        negative_prompt = gr.Textbox(label="Negative prompt",
+                                                    value="extra digit, fewer digits, cropped, worst quality, low quality, glitch, deformed, mutated, ugly, disfigured")
+                        guidance_scale = gr.Slider(label="Guidance Scale", minimum=1.0, maximum=10.0, step=0.1, value=8.8)
+                        inf_steps = gr.Slider(label="Inference Steps", minimum="25", maximum="50", step=1, value=25)
+                        custom_lora_weight = gr.Slider(label="Custom model weights", minimum=0.1, maximum=0.9,
+                                                      step=0.1, value=0.7)
+                        preprocessor = gr.Dropdown(label="Preprocessor", choices=["canny"], value="canny",
+                                                  interactive=False,
+                                                  info="For the moment, only canny is available")
+                        controlnet_conditioning_scale = gr.Slider(label="Controlnet conditioning Scale", minimum=0.1,
+                                                                   maximum=0.9, step=0.01, value=0.3)
+                        seed = gr.Slider(
+                            label="Seed",
+                            info="-1 denotes a random seed",
+                            minimum=-1,
+                            maximum=423538377342,
+                            step=1,
+                            value=-1
                         )
-                    else:
-                        custom_model = gr.Textbox(
-                            label="Your custom model ID", 
-                            placeholder="your_username/your_trained_model_name", 
-                            info="Make sure your model is set to PUBLIC"
+                        last_used_seed = gr.Number(
+                            label="Last used seed",
+                            info="the seed used in the last generation",
                         )
-                    
-                    weight_name = gr.Dropdown(
-                        label="Safetensors file", 
-                        #value="pytorch_lora_weights.safetensors", 
-                        info="specify which one if model has several .safetensors files",
-                        allow_custom_value=True,
-                        visible = False
-                    )
-                with gr.Column():
-                    with gr.Group():
-                        # load_model_btn = gr.Button("Load my model", elem_id="load_model_btn")
-                        previous_model = gr.Textbox(
-                            visible = False
-                        )
-                        
-                        model_status = gr.Textbox(
-                            label = "model status",
-                            show_label = False,
-                            elem_id = "status_info"
-                        )
-                    trigger_word = gr.Textbox(label="Trigger word", interactive=False, visible=False)
-       
-        load_model_btn = gr.Button("Load my model", elem_id="load_model_btn")
-        image_in = gr.Image(sources="upload", type="filepath", value=( "shop1.jpg"))
-        # gr.Examples(
-        #   examples=[[os.path.join(os.path.dirname(__file__), "shop2.jpg")],[os.path.join(os.path.dirname(__file__), "shop3.jpg")]], inputs=im)
+
+            submit_btn = gr.Button("Submit")
+
+            # label = gr.Label(label="Loader")
+            # submit_btn.click(infer, outputs=[label])
+
+            result = gr.Image(label="Result", visible=True)
+
+        use_custom_model.change(
+            fn=check_use_custom_or_no,
+            inputs=[use_custom_model],
+            outputs=[custom_model_box],
+            queue=False
+        )
+        custom_model.blur(
+            fn=custom_model_changed,
+            inputs=[custom_model, previous_model],
+            outputs=[model_status],
+            queue=False
+        )
+        load_model_btn.click(
+            fn=load_model,
+            inputs=[custom_model],
+            outputs=[previous_model, model_status, weight_name, trigger_word],
+            queue=False
+        )
+
+        # Define a function to handle the visibility of components
+        def handle_visibility():
+            use_custom_model.visible = False
+            custom_model_box.visible = False
+            load_model_btn.visible = False
+            image_in.visible = False
+            prompt.visible = False
             
 
-    with gr.Column(elem_id="col-container"):
-        gr.HTML("""
-          <h2 style="text-align: left;">Input a Prompt!</h2>
-          <p style="text-align: left;">Negative prompts and other settings can be found in advanced options</p>
-                  """)
+        submit_btn.click(
+            fn=infer,
+            inputs=[use_custom_model, custom_model, weight_name, custom_lora_weight, image_in, prompt, negative_prompt,
+                    preprocessor, controlnet_conditioning_scale, guidance_scale, inf_steps, seed],
+            outputs=[result, last_used_seed],
+        )
 
-        with gr.Row():
-            
-            with gr.Column():
-                # with gr.Group():
-                prompt = gr.Textbox(label="Prompt", placeholder="Add your trigger word here + prompt")
-                
-                with gr.Accordion(label="Advanced Options", open=False, visible=False):
-                  # with gr.Group():
-                    negative_prompt = gr.Textbox(label="Negative prompt", value="extra digit, fewer digits, cropped, worst quality, low quality, glitch, deformed, mutated, ugly, disfigured")
-                    guidance_scale = gr.Slider(label="Guidance Scale", minimum=1.0, maximum=10.0, step=0.1, value=8.8)
-                    inf_steps = gr.Slider(label="Inference Steps", minimum="25", maximum="50", step=1, value=25)
-                    custom_lora_weight = gr.Slider(label="Custom model weights", minimum=0.1, maximum=0.9, step=0.1, value=0.7)
-                    preprocessor = gr.Dropdown(label="Preprocessor", choices=["canny"], value="canny", interactive=False, info="For the moment, only canny is available")  
-                    controlnet_conditioning_scale = gr.Slider(label="Controlnet conditioning Scale", minimum=0.1, maximum=0.9, step=0.01, value=0.3)
-                    seed = gr.Slider(
-                        label="Seed",
-                        info = "-1 denotes a random seed",
-                        minimum=-1,
-                        maximum=423538377342,
-                        step=1,
-                        value=-1
-                    )
-                    last_used_seed = gr.Number(
-                        label = "Last used seed",
-                        info = "the seed used in the last generation",
-                    )
-            
-        submit_btn = gr.Button("Submit")
-
-        # label = gr.Label(label="Loader") 
-        # submit_btn.click(infer, outputs=[label])
-        
-        result = gr.Image(label="Result", visible=True)
-    
-    use_custom_model.change(
-        fn = check_use_custom_or_no,
-        inputs =[use_custom_model],
-        outputs = [custom_model_box],
-        queue = False
-    )
-    custom_model.blur(
-        fn=custom_model_changed,
-        inputs = [custom_model, previous_model],
-        outputs = [model_status],
-        queue = False
-    )
-    load_model_btn.click(
-        fn = load_model,
-        inputs=[custom_model],
-        outputs = [previous_model, model_status, weight_name, trigger_word],
-        queue = False
-    )
-    submit_btn.click(
-        fn = infer,
-        inputs = [use_custom_model,custom_model, weight_name, custom_lora_weight, image_in, prompt, negative_prompt, preprocessor, controlnet_conditioning_scale, guidance_scale, inf_steps, seed],
-        outputs = [result, last_used_seed]
-    )
-    
-
-  # return demo 
-  
-
+        submit_btn.click(
+                    fn=handle_visibility,
+                    inputs=[],
+                    outputs=[],
+                )
+# return demo
 demo.queue().launch(share=True)

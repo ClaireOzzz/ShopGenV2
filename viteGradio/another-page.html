@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<!-- <title>three.js webgl - multiple elements</title> -->
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		<link type="text/css" rel="stylesheet" href="./src/App.css">
@@ -9,15 +8,19 @@
 			* {
 				box-sizing: border-box;
 				-moz-box-sizing: border-box;
-                
-                /* top: -10%;
-                left: 50%;
-                transform: translate(-50%, 50%); */
 			}
 
 			body {
 				background-color: #fff;
 				color: #444;
+			}
+			canvas {
+				position: absolute;
+				top: 0;
+				left: 50%;
+				transform: translate(-50%, 50%);
+				border: 0px solid #c1c1c1;
+				border-radius: 3%;
 			}
 
 			a {
@@ -82,13 +85,20 @@
 		
 			let canvas, renderer;
 			const scenes = [];
-		
+			let titles = [];
+
+			async function fetchTitles() {
+				const response = await fetch('./images/titles.json');
+				titles = await response.json();
+			}
+
 			async function fetchImages() {
 				const response = await fetch('./images/names.json');
-				console.log(response)
+				//console.log(response)
 				const imageFiles = await response.json();
 		
 				const imagePairs = pairImages(imageFiles);
+				await fetchTitles();
 				init(imagePairs);
 				animate();
 			}
@@ -116,8 +126,6 @@
 			function init(imagePairs) {
 		
 				canvas = document.getElementById( 'c' );
-				let amap = new THREE.TextureLoader().load("result.png")
-				let dmap = new THREE.TextureLoader().load("depth.png")
 				const settings = {
 					metalness: 0.0,
 					roughness: 1,
@@ -141,6 +149,11 @@
 		
 					const sceneElement = document.createElement( 'div' );
 					element.appendChild( sceneElement );
+
+					const descriptionElement = document.createElement('div');
+					descriptionElement.innerText = titles[i]
+					element.appendChild(descriptionElement);
+
 		
 					scene.userData.element = sceneElement;
 					content.appendChild( element );
