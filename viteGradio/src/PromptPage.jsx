@@ -25,7 +25,7 @@ function PromptPage(props) {
   return (
     <>
       <div className={props.isVisible ? 'visible' : 'hidden'} style={{ overflow: 'hidden'}} >
-        <gradio-app eager="true" src="https://5b09a5f96648682b9d.gradio.live" ></gradio-app>
+        <gradio-app eager="true" src="https://a731db19ad43f6eac8.gradio.live" ></gradio-app>
         <button className='nextbutton'
           onClick={() => props.onPageButtonClick('Generate')}
          >Next</button>

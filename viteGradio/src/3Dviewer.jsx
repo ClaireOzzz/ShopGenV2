@@ -141,29 +141,28 @@ function Viewer3D(props) {
       const newTitle = titleInput.value;
       if (!localStorage.script) {
         localStorage.script = JSON.stringify([
-          "The Original One",
-          "My Lantern Shop",
-          "Plain Test",
-          "Street Corner",
-          "A Peranakan Garden",
-          "Peranakan cafe",
-          " ",
-          " ",
-          "A french cafe",
-          " ",
-          " ",
-          " ",
-          " ",
-          " ",
-          " ",
-          " ",
-          " ",
-          " ",
-          "The Last one"
+        "The Original One",
+        "My Lantern Shop",
+        "Plain Test",
+        "Street Corner",
+        "A Peranakan Garden",
+        "Peranakan cafe",
+        " ",
+        " ",
+        "A french cafe",
+        "Boutique",
+        "Test2 ",
+        "Kebaya shop",
+        "Test3 ",
+        "Cafe ",
+        "Baby Blue",
+        "Bakery",
+        "Test3",
+        "A Porcelain Concert hall"
         ]
         ) ;
       }  
-      localStorage.clear();
+      //localStorage.clear();
       newTitleList = JSON.parse(localStorage.script) ;
       console.log("help", newTitleList);
       newTitleList.push(newTitle);
@@ -173,7 +172,7 @@ function Viewer3D(props) {
     }
     
     function saveScript() {
-      localStorage.clear();
+      //localStorage.clear();
       localStorage.script = JSON.stringify(newTitleList) ;
     }
   
