@@ -171,7 +171,7 @@ def infer( use_custom_model, model_name, weight_name, custom_lora_weight, image_
 
     if instance_prompt == 'cmic':
       prompt = instance_prompt + 'peranakan' + prompt + 'in comic style'
-    if instance_prompt == 'bnwhouse':
+    elif instance_prompt == 'bnwhouse':
       prompt = instance_prompt + 'peranakan' + prompt + 'minimalist'
     else:
       prompt = instance_prompt + 'peranakan' + prompt
@@ -268,9 +268,7 @@ def infer( use_custom_model, model_name, weight_name, custom_lora_weight, image_
 
 
 css="""
-.{
-  height: 20%;
-}
+
 #col-container{
     margin: 0 auto;
     max-width: 720px;
@@ -316,6 +314,17 @@ button#component-38{
 
 div#component-39{
     top: 20px;
+}
+
+
+button.svelte-tsr9e2{
+  position: relative;
+  top: -45%;
+  width: var(--size-full);
+  height: var(--size-full);
+  object-fit: contain;
+  display: block;
+  
 }
 #status_info{
     font-size: 0.9em;
@@ -476,7 +485,7 @@ with gr.Blocks(theme=theme, css=css) as demo:
 
             submit_btn = gr.Button("Submit")
 
-            result = gr.Image(label="Result", visible=True)
+            result = gr.Image(label="Result")
 
         use_custom_model.change(
             fn=check_use_custom_or_no,

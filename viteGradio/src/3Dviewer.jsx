@@ -43,7 +43,7 @@ function createMesh(amap, dmap) {
       map: amap,
       displacementMap: dmap,
       emissive: 0xaaaaaa,
-      emissiveIntensity: 2.5,
+      emissiveIntensity: 2,
       emissiveMap: amap,
       roughness: settings.roughness,
       metalness: settings.metalness,
@@ -147,11 +147,23 @@ function Viewer3D(props) {
           "Street Corner",
           "A Peranakan Garden",
           "Peranakan cafe",
-          "Designer Studio"
+          " ",
+          " ",
+          "A french cafe",
+          " ",
+          " ",
+          " ",
+          " ",
+          " ",
+          " ",
+          " ",
+          " ",
+          " ",
+          "The Last one"
         ]
         ) ;
       }  
-      //localStorage.clear();
+      localStorage.clear();
       newTitleList = JSON.parse(localStorage.script) ;
       console.log("help", newTitleList);
       newTitleList.push(newTitle);
@@ -161,7 +173,7 @@ function Viewer3D(props) {
     }
     
     function saveScript() {
-      // localStorage.clear();
+      localStorage.clear();
       localStorage.script = JSON.stringify(newTitleList) ;
     }
   
