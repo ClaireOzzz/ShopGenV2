@@ -19,7 +19,7 @@ function App() {
   return (
     <>
       <div>
-        <Header onPageButtonClick={handleButtonClick} currentPage={currentPage} style={{zIndex:'100'}}/>
+        <Header onPageButtonClick={handleButtonClick} currentPage={currentPage} style={{zIndex:'4000'}}/>
         <VisualisationPage onPageButtonClick={handleButtonClick} isVisible={currentPage === 'Visualisation'} />
         <PromptPage onPageButtonClick={handleButtonClick} isVisible={currentPage === 'Prompt'} />
         <Viewer3D onPageButtonClick={handleButtonClick} isVisible={currentPage === 'Generate'} />

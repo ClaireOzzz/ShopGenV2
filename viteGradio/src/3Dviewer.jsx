@@ -183,7 +183,7 @@ function Viewer3D(props) {
                         props.onPageButtonClick('Gallery');
                         updateTitles();
                     }}
-                    style={{ position:'fixed', textAlign: 'center', marginTop:'1%' }} >Next</button>
+                    style={{ position:'fixed', textAlign: 'center', marginTop:'1%', fontWeight:'bold' }}  >Next</button>
                 </div>
             </div>
             

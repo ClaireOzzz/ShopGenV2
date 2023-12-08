@@ -1,21 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import Test from './components/test';
-import ImageGenerationForm from './components/sdxl';
-import Original from './components/original';
-import Header from './Header';
 import './App.css';
 
 function PromptPage(props) {
+  // Mini gallery
+  const [isSlideoutOpen, setIsSlideoutOpen] = useState(false);
 
+  const handleToggle = () => {
+    setIsSlideoutOpen(!isSlideoutOpen);
+  };
+  const handleClose = () => {
+    setIsSlideoutOpen(false);
+  };
+
+  // Visual model style panales
   const panels = document.querySelectorAll('.modelpanel');
-
   panels.forEach(panel => {
       panel.addEventListener('click', () => {
           removeActiveClasses();
           panel.classList.add('active');
       });
   });
-
   function removeActiveClasses () {
       panels.forEach(panel => {
           panel.classList.remove('active');
@@ -24,12 +28,8 @@ function PromptPage(props) {
 
   return (
     <>
-      <div className={props.isVisible ? 'visible' : 'hidden'} style={{ overflow: 'hidden'}} >
-        <gradio-app eager="true" src="https://7df0f531808e92559e.gradio.live/" ></gradio-app>
-        <button className='nextbutton'
-          onClick={() => props.onPageButtonClick('Generate')}
-         >Next</button>
-     
+      <div className={props.isVisible ? 'visible' : 'hidden'} style={{ overflow: 'hidden', height:'870px'}} >
+        <gradio-app eager="true" src="https://558135cd325f86194b.gradio.live/" ></gradio-app>
 
           <div className="modelcontainer">
             <div className="modelpanel panel1 active">
@@ -46,8 +46,20 @@ function PromptPage(props) {
             </div>
           </div>
         
-        
-
+            <button className='nextbutton' onClick={() => props.onPageButtonClick('Generate')}>
+              Next
+            </button>
+            <button type="button" className="nextbutton" style={{marginRight:'100px'}} onClick={handleToggle}>
+              View Gallery
+            </button>
+            
+            <div id="slideout" className={isSlideoutOpen ? 'on' : ''}>
+                <button type="button"  style={{left:'70%', fontWeight:'bolder', fontSize:'110%'}} onClick={handleClose}>
+                  x
+                </button>
+                <iframe id="iframeid" loading="lazy" src="./../another-page.html" width="120%" height="1000px" style={{top:'4%', border:'none', overflowX:'hidden'}} ></iframe>
+            </div>
+         
         <div className='BottomBar'style={{ position:'fixed' ,zIndex:'3001'}}  >
           <img src="./SUNSbtm.png" className="logoBtm" alt="SUNS" style={{top:'82%', position:'fixed', width: '100px'}} />
         </div>

@@ -25,7 +25,9 @@ canvas {
   transform: translate(-50%, 50%);
   border: 2px solid #c1c1c1;
   border-radius: 3%;
+  cursor: pointer;
 }
+
 
 .inputPrompt {
   margin: 0;
@@ -176,7 +178,7 @@ button {
   position: relative;
   padding: 5%;
   color: black;
-  background-color: #1fcfbb;
+  background-color: #42e0ce;
   border-radius: 5%;
   color: #fff;
   border: none;
@@ -193,16 +195,17 @@ button:focus {
 }
 
 .nextbutton {
-  position: fixed;
+  margin-right: 20px;
+  position: sticky;
   background-color: #54dece;
   border-radius: 5%;
-  color: #000000;
+  color: #ffffff;
   font-weight: bold;
   border: none;
   cursor: pointer;
   top: 80%;
-  left: 93%;
-  transform: translate(-50%, 50%);
+  left: 96%;
+  /* transform: translate(-50%, 50%); */
 }
 
 .nextbutton:focus {
@@ -217,7 +220,7 @@ button:focus {
   }
 }
 .modelcontainer {
-  z-index: 2000;
+  /* z-index: 2000; */
   display: flex;
   width: 41vw;
   position: fixed;
@@ -289,4 +292,35 @@ button:focus {
     left: 1%;
     top: 45%;
   }
+}
+
+.slidecontainer {
+  margin-top: 20px;
+}
+
+#slideout {
+  z-index: 1000;
+  /* color: transparent; */
+  position: fixed;
+  top: 10%;
+  left: -52vw;
+  width: 44vw;
+  height: 5%;
+  -webkit-transition-duration: 0.7s;
+  -moz-transition-duration: 0.7s;
+  -o-transition-duration: 0.7s;
+  transition-duration: 0.7s;
+}
+#slideout form {
+  display: block;
+  padding: 20px;
+}
+/* #slideout textarea {
+  display:block;
+  height: 100px;
+  width: 250px;
+} */
+#slideout.on {
+  top: 10%;
+  left: 0;
 }

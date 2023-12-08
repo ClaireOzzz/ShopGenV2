@@ -1,8 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import Test from './components/test';
-import ImageGenerationForm from './components/sdxl';
-import Original from './components/original';
-import Header from './Header';
 import './App.css';
 
 function GalleryPage({ isVisible }) {

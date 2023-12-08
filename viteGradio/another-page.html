@@ -21,6 +21,7 @@
 				transform: translate(-50%, 50%);
 				border: 0px solid #c1c1c1;
 				border-radius: 3%;
+				cursor: pointer;
 			}
 
 			a {
@@ -46,6 +47,7 @@
 				margin: 1em;
 				padding: 1em;
 				box-shadow: 1px 2px 4px 0px rgba(0,0,0,0.25);
+				cursor: pointer;
 			}
 
 			.list-item > div:nth-child(1) {
@@ -66,7 +68,6 @@
         
 		<canvas id="c"></canvas>
 		<div id="content">
-			<!-- <div id="info"><a href="https://threejs.org" target="_blank" rel="noopener">three.js</a> - multiple elements - webgl</div> -->
 		</div>
 
 		<script type="importmap">
@@ -78,18 +79,13 @@
 			}
 		</script>
 
-		<script type="module">
+		<script type="module" >
 
 			import * as THREE from 'three';
 			import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 		
 			let canvas, renderer;
 			const scenes = [];
-			// let titles = [];
-			// async function fetchTitles() {
-			// 	const response = await fetch('./images/titles.json');
-			// 	titles = await response.json();
-			// }
 
 			async function fetchImages() {
 				const response = await fetch('./images/names.json');
@@ -215,6 +211,45 @@
 					scene.add( mesh );
 					scenes.push( scene );
 				}
+				
+				// Add this code inside the init function after the loop that creates scenes
+				for (let i = 0; i < scenes.length; i++) {
+					const listItem = document.getElementsByClassName('list-item')[i];
+					
+					
+					listItem.addEventListener('click', function () {
+					// Close any previously expanded canvas
+					scenes.forEach((scene, index) => {
+						if (index !== i) {
+							const otherCanvas = scene.userData.element;
+							const otherCamera = scene.userData.camera;
+							const otherControls = scene.userData.controls;
+
+							otherCamera.aspect = 1;
+							otherCamera.updateProjectionMatrix();
+							otherControls.enabled = false;
+
+							otherCanvas.style.width = '350px'; // Adjust this value based on your original canvas size
+							otherCanvas.style.height = '220px'; // Adjust this value based on your original canvas size
+							otherCanvas.style.transform = 'translate(0, 0)';
+						}
+					});
+
+					// Expand the clicked canvas
+					const camera = scenes[i].userData.camera;
+					const controls = scenes[i].userData.controls;
+					const canvas = scenes[i].userData.element;
+
+					camera.aspect = window.innerWidth / window.innerHeight;
+					camera.updateProjectionMatrix();
+					controls.enabled = true;
+
+					canvas.style.width = '90vw';
+					canvas.style.height = '60vh';
+					canvas.style.transform = 'translate(0, 0)';
+				});
+				}
+
 		
 				renderer = new THREE.WebGLRenderer( { canvas: canvas, antialias: true } );
 				renderer.setClearColor( 0x000000, 0 );
@@ -271,7 +306,6 @@
 		
 			fetchImages();
 			//console.log("localStorage ", localStorage)
-		
 		</script>
 
 	</body>
