@@ -43,7 +43,7 @@ function createMesh(amap, dmap) {
       map: amap,
       displacementMap: dmap,
       emissive: 0xaaaaaa,
-      emissiveIntensity: 2.5,
+      emissiveIntensity: 2,
       emissiveMap: amap,
       roughness: settings.roughness,
       metalness: settings.metalness,
@@ -141,13 +141,24 @@ function Viewer3D(props) {
       const newTitle = titleInput.value;
       if (!localStorage.script) {
         localStorage.script = JSON.stringify([
-          "The Original One",
-          "My Lantern Shop",
-          "Plain Test",
-          "Street Corner",
-          "A Peranakan Garden",
-          "Peranakan cafe",
-          "Designer Studio"
+        "The Original One",
+        "My Lantern Shop",
+        "Plain Test",
+        "Street Corner",
+        "A Peranakan Garden",
+        "Peranakan cafe",
+        " ",
+        " ",
+        "A french cafe",
+        "Boutique",
+        "Test2 ",
+        "Kebaya shop",
+        "Test3 ",
+        "Cafe ",
+        "Baby Blue",
+        "Bakery",
+        "Test3",
+        "A Porcelain Concert hall"
         ]
         ) ;
       }  
@@ -161,7 +172,7 @@ function Viewer3D(props) {
     }
     
     function saveScript() {
-      // localStorage.clear();
+      //localStorage.clear();
       localStorage.script = JSON.stringify(newTitleList) ;
     }
   
