@@ -10,8 +10,8 @@ function VisualisationPage( props ) {
           Your browser does not support the video tag.
         </video>
 
-        <div className="centered-container">
-          <button 
+        <div className="centered-container" style={{top:'65%'}}>
+          <button style={{width:'200px', fontWeight:'bold', fontSize:'larger'}}
             onClick={() => props.onPageButtonClick('Prompt')}
           >Begin</button>
         </div>

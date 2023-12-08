@@ -158,7 +158,8 @@ function Viewer3D(props) {
         "Baby Blue",
         "Bakery",
         "Test3",
-        "A Porcelain Concert hall"
+        "A Porcelain Concert hall",
+        "A fancy jewelery shop"
         ]
         ) ;
       }  
