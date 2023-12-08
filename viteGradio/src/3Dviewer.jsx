@@ -139,9 +139,10 @@ function Viewer3D(props) {
     function updateTitles() {
       const titleInput = document.getElementById('titleInput');
       const newTitle = titleInput.value;
+      //localStorage.clear();
       if (!localStorage.script) {
         localStorage.script = JSON.stringify([
-        "The Original One",
+         "The Original One",
         "My Lantern Shop",
         "Plain Test",
         "Street Corner",
@@ -159,11 +160,13 @@ function Viewer3D(props) {
         "Bakery",
         "Test3",
         "A Porcelain Concert hall",
-        "A fancy jewelery shop"
+		    "A fancy jewelry shop",
+        "Antique shop 2",
+        "Antique shop 1 ",
+        "Fancy Mansion"
         ]
         ) ;
       }  
-      //localStorage.clear();
       newTitleList = JSON.parse(localStorage.script) ;
       console.log("help", newTitleList);
       newTitleList.push(newTitle);
