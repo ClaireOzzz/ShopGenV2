@@ -29,7 +29,7 @@ function PromptPage(props) {
   return (
     <>
       <div className={props.isVisible ? 'visible' : 'hidden'} style={{ overflow: 'hidden', height:'870px'}} >
-        <gradio-app eager="true" src="https://debb2ea6b76c0026cb.gradio.live/" ></gradio-app>
+        <gradio-app eager="true" src="https://a4b4df4f84e163e31b.gradio.live" ></gradio-app>
 
           <div className="modelcontainer">
             <div className="modelpanel panel1 active">
