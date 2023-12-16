@@ -20,7 +20,7 @@ language:
 
 ## Status
 
-Currently ongoing - will be completed by the 17th of December
+Completed.
 
 ## Demo
 
