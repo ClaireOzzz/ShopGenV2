@@ -1,18 +1,3 @@
----
-tags:
-- text-to-image
-- creative
-- control-image
-- stable-diffusion
-inference: true
-pinned: false
-datasets:
-- ClaireOzzz/All_Images
-- ClaireOzzz/Porcelain
-license: mit
-language:
-- en
----
 
 # SUTDxSUNS Spatial Project: A 2.5D Control Generator 
 
@@ -24,12 +9,13 @@ Completed.
 
 ## Demo
 
-Try out the prototype on [COLAB]([https://colab.research.google.com/drive/18FBtOWcf9jgLGV-p-ATPNtCHus2yWe-W?usp=sharing](https://colab.research.google.com/drive/1lk4m4Gl-tcZiefpAR0r74kIXZoP3TMIv?usp=sharing))
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1lk4m4Gl-tcZiefpAR0r74kIXZoP3TMIv?usp=sharing) | Try out the prototype on colab
+
 
 ## Project Description
 
-This project was for a short-term design studio that required applied deep learning and linking of existing models for spatial design. Special thanks to SUNS for providing us with data.
-The controlnet training model and generation code is credited to fffiloni.
+This project was for a short-term design studio that required applied deep learning and linking of existing models for spatial design. Special thanks to SUNS and the Singapore Peranakan Museum for providing us with image data.
+The controlnet inference model is credited to fffiloni.
 
 [Generation model](https://huggingface.co/spaces/fffiloni/sdxl-control-loras)
 
@@ -41,10 +27,10 @@ The controlnet training model and generation code is credited to fffiloni.
 
 ### Key Features
 
-- **User-Friendly Training Interface for non-developers**
+- **User-Friendly Generation Interface for non-developers**
   
-- **Text-to-Image Generation with control** 
+- **Text-to-Image Generation with ControlNet** 
 
 - **Specific Training Data** 
 
-- **2.5D Visualisation** B
+- **2.5D Visualisation** 
