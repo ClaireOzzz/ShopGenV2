@@ -22,7 +22,7 @@ The controlnet inference model is credited to fffiloni.
 
 ## Pipeline
 
-![image/png](https://github.com/ClaireOzzz/ImageURLhost/blob/main/New%20Pipeline.png?raw=true)
+![image/png](https://raw.githubusercontent.com/ClaireOzzz/ImageURLhost/main/customerpipeline.png)
 
 
 ### Key Features
