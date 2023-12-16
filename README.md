@@ -1,5 +1,5 @@
 
-# SUTDxSUNS Spatial Project: A 2.5D Control Generator 
+# SUTDxSUNS Spatial Project: A 2.5D Control Generator for Customers
 
 ![image/png](https://github.com/ClaireOzzz/ImageURLhost/blob/main/Prototype%20Tests.png?raw=true)
 
